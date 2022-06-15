@@ -23,11 +23,11 @@ console:
 
 seata:
   config:
-    # support: nacos, consul, apollo, zk, etcd3
-    type: file
+    # support: file, nacos, consul, apollo, zk, etcd3
+    type: nacos
   registry:
-    # support: nacos, eureka, redis, zk, consul, etcd3, sofa
-    type: file
+    # support: file, nacos, eureka, redis, zk, consul, etcd3, sofa
+    type: nacos
   store:
     # support: file 、 db 、 redis
     mode: file
