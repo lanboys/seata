@@ -25,9 +25,29 @@ seata:
   config:
     # support: file, nacos, consul, apollo, zk, etcd3
     type: nacos
+    nacos:
+      server-addr: 14.116.220.233:14200
+      namespace: # 注意命名空间id不能是字符串[public], 不然一直打印日志, 不知道为啥, 本来保留空间public的命名空间id就是空的, 如果要用, 就要空着不填
+      group: SEATA_GROUP
+      username: nacos
+      password: nacospwd
+      ##if use MSE Nacos with auth, mutex with username/password attribute
+      #access-key: ""
+      #secret-key: ""
+      data-id: seataServer.properties
   registry:
     # support: file, nacos, eureka, redis, zk, consul, etcd3, sofa
     type: nacos
+    nacos:
+      server-addr: 14.116.220.233:14200
+      namespace:
+      group: SEATA_GROUP
+      username: nacos
+      password: nacospwd
+      ##if use MSE Nacos with auth, mutex with username/password attribute
+      #access-key: ""
+      #secret-key: ""
+      data-id: seataServer.properties
   store:
     # support: file 、 db 、 redis
     mode: file
