@@ -122,6 +122,7 @@ public abstract class AbstractRMHandler extends AbstractExceptionHandler
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Branch Rollbacking: " + xid + " " + branchId + " " + resourceId);
         }
+        // 阶段二：全局事务回滚 -> 本地事务回滚(AT模式：其实是开启一个新的本地事务进行反向补偿，因为阶段一的本地事务已经提交)
         BranchStatus status = getResourceManager().branchRollback(request.getBranchType(), xid, branchId, resourceId,
             applicationData);
         response.setXid(xid);

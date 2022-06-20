@@ -37,6 +37,8 @@ import static io.seata.spring.annotation.datasource.AutoDataSourceProxyRegistrar
 
 /**
  * @author xingfudeshi@gmail.com
+ *
+ * 自动配置类
  */
 @ComponentScan(basePackages = "io.seata.spring.boot.autoconfigure.properties")
 @ConditionalOnProperty(prefix = StarterConstants.SEATA_PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
