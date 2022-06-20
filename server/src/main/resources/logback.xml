@@ -97,6 +97,10 @@
         </encoder>
     </appender>
 
+    <logger name = "io.seata.core.rpc.netty" level = "warn">
+        <appender-ref ref="WARN"/>
+    </logger>
+
     <root level="INFO">
         <appender-ref ref="ALL"/>
         <appender-ref ref="WARN"/>
