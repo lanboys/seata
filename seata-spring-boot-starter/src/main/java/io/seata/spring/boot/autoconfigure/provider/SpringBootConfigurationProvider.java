@@ -49,6 +49,7 @@ public class SpringBootConfigurationProvider implements ExtConfigurationProvider
             @Override
             public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy)
                 throws Throwable {
+                // spring-boot-starter 的扩展、增强 配置文件
                 if (method.getName().startsWith(INTERCEPT_METHOD_PREFIX) && args.length > 0) {
                     Object result = null;
                     String rawDataId = (String) args[0];
