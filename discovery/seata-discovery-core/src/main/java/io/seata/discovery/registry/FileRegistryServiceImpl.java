@@ -82,6 +82,9 @@ public class FileRegistryServiceImpl implements RegistryService<ConfigChangeList
         if (clusterName == null) {
             return null;
         }
+        // 可能是个 BUG，研究透彻后再看看
+        // 如果配置文件这么配置 seata.config.type=nacos, seata.registry.type=file
+        // 下面 CONFIG，取的是 NacosConfiguration 实例
         String endpointStr = CONFIG.getConfig(
             PREFIX_SERVICE_ROOT + CONFIG_SPLIT_CHAR + clusterName + POSTFIX_GROUPLIST);
         if (StringUtils.isNullOrEmpty(endpointStr)) {
