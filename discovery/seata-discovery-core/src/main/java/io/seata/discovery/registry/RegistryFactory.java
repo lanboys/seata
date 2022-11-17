@@ -49,6 +49,7 @@ public class RegistryFactory {
 
     private static RegistryService buildRegistryService() {
         RegistryType registryType;
+        // 获取 registry.type
         String registryTypeName = ConfigurationFactory.CURRENT_FILE_INSTANCE.getConfig(
             ConfigurationKeys.FILE_ROOT_REGISTRY + ConfigurationKeys.FILE_CONFIG_SPLIT_CHAR
                 + ConfigurationKeys.FILE_ROOT_TYPE);
@@ -58,6 +59,13 @@ public class RegistryFactory {
             throw new NotSupportYetException("not support registry type: " + registryTypeName);
         }
         if (RegistryType.File == registryType) {
+            //           registry {
+            //               type = "file"
+            //               file {
+            //                   name = "file.conf"
+            //               }
+            //           }
+            // 这里面的文件名 file.conf 其实没什么用, FileRegistryServiceImpl 里面用到的配置是直接从 config 实例中获取
             return FileRegistryServiceImpl.getInstance();
         } else {
             return EnhancedServiceLoader.load(RegistryProvider.class, Objects.requireNonNull(registryType).name()).provide();

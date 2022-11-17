@@ -106,6 +106,7 @@ public interface RegistryService<T> {
             ConfigurationCache.addConfigListener(key);
             SERVICE_GROUP_NAME.add(key);
         }
+        // 这个配置比较特殊，需要从配置中心取(非注册中心)，放在 config 实例里面
         return ConfigurationFactory.getInstance().getConfig(key);
     }
 }

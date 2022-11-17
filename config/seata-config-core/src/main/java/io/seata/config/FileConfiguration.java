@@ -113,6 +113,7 @@ public class FileConfiguration extends AbstractConfiguration {
                 targetFilePath = null;
             }
         } else {
+            // 如果是 spring-boot-starter 项目中，虽然配置会被覆盖，但是加载这一动作也会执行
             URL resource = this.getClass().getClassLoader().getResource(name);
             if (resource != null) {
                 targetFilePath = resource.getPath();

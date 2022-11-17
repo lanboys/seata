@@ -82,6 +82,16 @@ public class FileRegistryServiceImpl implements RegistryService<ConfigChangeList
         if (clusterName == null) {
             return null;
         }
+        // https://seata.io/zh-cn/docs/user/configurations.html
+        // registry.type=file或config.type=file 设计的初衷是让用户在不依赖第三方注册中心或配置中心的前提下，通过直连的方式，快速验证seata服务。
+
+        // 如果配置文件这么配置 seata.config.type=nacos, seata.registry.type=file
+        // 下面 CONFIG，取的是 NacosConfiguration 实例
+
+        // 根据集群名字来获取 grouplist , 默认的是 service.default.grouplist
+        // 如：service.springboot_http_cluster_a.grouplist
+
+        // 模拟第三方注册中心，从注册中心获取具体的服务地址
         String endpointStr = CONFIG.getConfig(
             PREFIX_SERVICE_ROOT + CONFIG_SPLIT_CHAR + clusterName + POSTFIX_GROUPLIST);
         if (StringUtils.isNullOrEmpty(endpointStr)) {

@@ -42,6 +42,7 @@ public final class ConfigurationFactory {
 
     private static final String ENV_SEATA_CONFIG_NAME = "SEATA_CONFIG_NAME";
 
+    // registry.conf 实例
     public static final Configuration CURRENT_FILE_INSTANCE;
 
     static {
@@ -56,10 +57,12 @@ public final class ConfigurationFactory {
         if (envValue == null) {
             envValue = System.getenv(ENV_SYSTEM_KEY);
         }
+        // 加载默认的 registry.conf 文件, 除非自己配置了其他文件名
         Configuration configuration = (envValue == null) ? new FileConfiguration(seataConfigName + REGISTRY_CONF_SUFFIX,
             false) : new FileConfiguration(seataConfigName + "-" + envValue + REGISTRY_CONF_SUFFIX, false);
         Configuration extConfiguration = null;
         try {
+            // 扩展、增强 配置文件
             extConfiguration = EnhancedServiceLoader.load(ExtConfigurationProvider.class).provide(configuration);
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("load Configuration:{}", extConfiguration == null ? configuration.getClass().getSimpleName()
@@ -70,12 +73,15 @@ public final class ConfigurationFactory {
         } catch (Exception e) {
             LOGGER.error("failed to load extConfiguration:{}", e.getMessage(), e);
         }
+        // registry.conf 实例
         CURRENT_FILE_INSTANCE = extConfiguration == null ? configuration : extConfiguration;
     }
 
     private static final String NAME_KEY = "name";
     private static final String FILE_TYPE = "file";
 
+    // 根据 config.type 创建的实例，比如 zk,nacos,file...
+    // 那 registry.type 的实例呢？目前看是共用一个，共用那文件名不一样怎么办，registry 中的文件名其实没用
     private static volatile Configuration instance = null;
 
     /**
@@ -98,6 +104,7 @@ public final class ConfigurationFactory {
         ConfigType configType;
         String configTypeName;
         try {
+            // 获取 config.type
             configTypeName = CURRENT_FILE_INSTANCE.getConfig(
                 ConfigurationKeys.FILE_ROOT_CONFIG + ConfigurationKeys.FILE_CONFIG_SPLIT_CHAR
                     + ConfigurationKeys.FILE_ROOT_TYPE);
@@ -115,6 +122,7 @@ public final class ConfigurationFactory {
         if (ConfigType.File == configType) {
             String pathDataId = String.join(ConfigurationKeys.FILE_CONFIG_SPLIT_CHAR,
                 ConfigurationKeys.FILE_ROOT_CONFIG, FILE_TYPE, NAME_KEY);
+            // 配置文件名
             String name = CURRENT_FILE_INSTANCE.getConfig(pathDataId);
             configuration = new FileConfiguration(name);
             try {
