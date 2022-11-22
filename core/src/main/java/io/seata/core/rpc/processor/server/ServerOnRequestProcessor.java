@@ -74,6 +74,7 @@ public class ServerOnRequestProcessor implements RemotingProcessor {
     @Override
     public void process(ChannelHandlerContext ctx, RpcMessage rpcMessage) throws Exception {
         if (ChannelManager.isRegistered(ctx.channel())) {
+            // 处理客户端的各类消息
             onRequestMessage(ctx, rpcMessage);
         } else {
             try {
