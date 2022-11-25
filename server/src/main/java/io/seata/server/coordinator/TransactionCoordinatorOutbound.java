@@ -23,6 +23,8 @@ import io.seata.server.session.GlobalSession;
 /**
  * send outbound request to RM.
  *
+ * TC 向 RM 发送消息
+ *
  * @author zhangchenghui.dev@gmail.com
  * @since 1.1.0
  */

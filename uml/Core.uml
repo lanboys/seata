@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>io.seata.server.coordinator.Core</OriginalElement>
+  <nodes>
+    <node x="1161.828125" y="38.0">io.seata.server.coordinator.TransactionCoordinatorOutbound</node>
+    <node x="962.75" y="291.0">io.seata.server.coordinator.DefaultCore</node>
+    <node x="675.5" y="206.0">io.seata.core.protocol.transaction.TCInboundHandler</node>
+    <node x="992.25" y="121.0">io.seata.server.coordinator.Core</node>
+    <node x="1050.578125" y="-45.0">io.seata.core.model.ResourceManagerInbound</node>
+    <node x="86.5" y="384.0">io.seata.rm.AbstractRMHandler</node>
+    <node x="642.0" y="291.0">io.seata.server.AbstractTCInboundHandler</node>
+    <node x="90.5" y="467.0">io.seata.rm.DefaultRMHandler</node>
+    <node x="580.8281250000001" y="38.0">io.seata.server.coordinator.TransactionCoordinatorInbound</node>
+    <node x="487.078125" y="-45.0">io.seata.core.model.TransactionManager</node>
+    <node x="931.828125" y="38.0">io.seata.core.model.ResourceManager</node>
+    <node x="329.0" y="291.0">io.seata.core.rpc.TransactionMessageHandler</node>
+    <node x="737.578125" y="-45.0">io.seata.core.model.ResourceManagerOutbound</node>
+    <node x="86.0" y="291.0">io.seata.core.protocol.transaction.RMInboundHandler</node>
+    <node x="911.5" y="206.0">io.seata.server.coordinator.AbstractCore</node>
+    <node x="797.703125" y="384.0">io.seata.server.coordinator.DefaultCoordinator</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="io.seata.server.coordinator.DefaultCore" target="io.seata.server.coordinator.Core" relationship="REALIZATION">
+      <point x="40.0" y="-16.5" />
+      <point x="1082.75" y="265.0" />
+      <point x="1090.0" y="265.0" />
+      <point x="1090.0" y="180.0" />
+      <point x="1042.75" y="180.0" />
+      <point x="0.0" y="16.5" />
+    </edge>
+    <edge source="io.seata.rm.DefaultRMHandler" target="io.seata.rm.AbstractRMHandler" relationship="TO_MANY">
+      <point x="53.5" y="-16.5" />
+      <point x="251.0" y="442.0" />
+      <point x="253.0" y="442.0" />
+      <point x="55.5" y="16.5" />
+    </edge>
+    <edge source="io.seata.rm.DefaultRMHandler" target="io.seata.rm.AbstractRMHandler" relationship="GENERALIZATION">
+      <point x="-53.5" y="-16.5" />
+      <point x="144.0" y="442.0" />
+      <point x="142.0" y="442.0" />
+      <point x="-55.5" y="16.5" />
+    </edge>
+    <edge source="io.seata.server.coordinator.DefaultCore" target="io.seata.server.coordinator.AbstractCore" relationship="TO_MANY">
+      <point x="-40.0" y="-16.5" />
+      <point x="1002.75" y="265.0" />
+      <point x="995.5" y="265.0" />
+      <point x="0.0" y="16.5" />
+    </edge>
+    <edge source="io.seata.server.coordinator.DefaultCoordinator" target="io.seata.server.AbstractTCInboundHandler" relationship="GENERALIZATION">
+      <point x="-27.375" y="-16.5" />
+      <point x="879.828125" y="344.0" />
+      <point x="783.5" y="344.0" />
+      <point x="0.0" y="16.5" />
+    </edge>
+    <edge source="io.seata.core.model.ResourceManager" target="io.seata.core.model.ResourceManagerOutbound" relationship="INTERFACE_GENERALIZATION">
+      <point x="0.0" y="-16.5" />
+      <point x="1036.828125" y="8.0" />
+      <point x="884.078125" y="8.0" />
+      <point x="0.0" y="16.5" />
+    </edge>
+    <edge source="io.seata.server.AbstractTCInboundHandler" target="io.seata.core.protocol.transaction.TCInboundHandler" relationship="REALIZATION">
+      <point x="0.0" y="-16.5" />
+      <point x="0.0" y="16.5" />
+    </edge>
+    <edge source="io.seata.server.coordinator.Core" target="io.seata.server.coordinator.TransactionCoordinatorInbound" relationship="INTERFACE_GENERALIZATION">
+      <point x="0.0" y="-16.5" />
+      <point x="1042.75" y="96.0" />
+      <point x="741.3281250000001" y="96.0" />
+      <point x="0.0" y="16.5" />
+    </edge>
+    <edge source="io.seata.server.coordinator.Core" target="io.seata.server.coordinator.TransactionCoordinatorOutbound" relationship="INTERFACE_GENERALIZATION">
+      <point x="0.0" y="-16.5" />
+      <point x="1042.75" y="96.0" />
+      <point x="1329.828125" y="96.0" />
+      <point x="0.0" y="16.5" />
+    </edge>
+    <edge source="io.seata.server.coordinator.TransactionCoordinatorInbound" target="io.seata.core.model.TransactionManager" relationship="INTERFACE_GENERALIZATION">
+      <point x="-1.1368683772161603E-13" y="-16.5" />
+      <point x="741.328125" y="8.0" />
+      <point x="601.078125" y="8.0" />
+      <point x="0.0" y="16.5" />
+    </edge>
+    <edge source="io.seata.server.coordinator.DefaultCoordinator" target="io.seata.server.coordinator.DefaultCore" relationship="CREATE">
+      <point x="82.125" y="-16.5" />
+      <point x="989.328125" y="364.0" />
+      <point x="1082.75" y="364.0" />
+      <point x="40.0" y="16.5" />
+    </edge>
+    <edge source="io.seata.rm.AbstractRMHandler" target="io.seata.core.protocol.transaction.RMInboundHandler" relationship="REALIZATION">
+      <point x="0.0" y="-16.5" />
+      <point x="0.0" y="16.5" />
+    </edge>
+    <edge source="io.seata.server.coordinator.TransactionCoordinatorInbound" target="io.seata.core.model.ResourceManagerOutbound" relationship="INTERFACE_GENERALIZATION">
+      <point x="-1.1368683772161603E-13" y="-16.5" />
+      <point x="741.328125" y="18.0" />
+      <point x="884.078125" y="18.0" />
+      <point x="0.0" y="16.5" />
+    </edge>
+    <edge source="io.seata.server.coordinator.AbstractCore" target="io.seata.server.coordinator.Core" relationship="REALIZATION">
+      <point x="0.0" y="-16.5" />
+      <point x="995.5" y="180.0" />
+      <point x="1042.75" y="180.0" />
+      <point x="0.0" y="16.5" />
+    </edge>
+    <edge source="io.seata.rm.AbstractRMHandler" target="io.seata.core.rpc.TransactionMessageHandler" relationship="REALIZATION">
+      <point x="0.0" y="-16.5" />
+      <point x="197.5" y="364.0" />
+      <point x="475.5" y="364.0" />
+      <point x="0.0" y="16.5" />
+    </edge>
+    <edge source="io.seata.server.coordinator.DefaultCoordinator" target="io.seata.core.rpc.TransactionMessageHandler" relationship="REALIZATION">
+      <point x="-82.125" y="-16.5" />
+      <point x="825.078125" y="354.0" />
+      <point x="475.5" y="354.0" />
+      <point x="0.0" y="16.5" />
+    </edge>
+    <edge source="io.seata.core.model.ResourceManager" target="io.seata.core.model.ResourceManagerInbound" relationship="INTERFACE_GENERALIZATION">
+      <point x="0.0" y="-16.5" />
+      <point x="1036.828125" y="18.0" />
+      <point x="1189.578125" y="18.0" />
+      <point x="0.0" y="16.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.0" showDependencies="true" x="792.0" y="227.5" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>Production</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

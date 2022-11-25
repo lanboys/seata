@@ -59,6 +59,9 @@ public abstract class AbstractCore implements Core {
 
     protected RemotingServer remotingServer;
 
+    // just for test
+    private String resourceIdPre = "jdbc:mysql://localhost:3306/";
+
     public AbstractCore(RemotingServer remotingServer) {
         this.remotingServer = remotingServer;
     }
@@ -83,6 +86,8 @@ public abstract class AbstractCore implements Core {
                         .format("Failed to store branch xid = %s branchId = %s", globalSession.getXid(),
                                 branchSession.getBranchId()), ex);
             }
+            LOGGER.info("分支【{}】注册成功", resourceId.replace(resourceIdPre, ""));
+
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Register branch successfully, xid = {}, branchId = {}, resourceId = {} ,lockKeys = {}",
                     globalSession.getXid(), branchSession.getBranchId(), resourceId, lockKeys);
@@ -133,6 +138,7 @@ public abstract class AbstractCore implements Core {
         }
         globalSession.addSessionLifecycleListener(SessionHolder.getRootSessionManager());
         globalSession.changeBranchStatus(branchSession, status);
+        LOGGER.info("分支【{}】报告成功", branchSession.getResourceId().replace(resourceIdPre, ""));
 
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Report branch status successfully, xid = {}, branchId = {}", globalSession.getXid(),
@@ -143,6 +149,7 @@ public abstract class AbstractCore implements Core {
     @Override
     public boolean lockQuery(BranchType branchType, String resourceId, String xid, String lockKeys)
             throws TransactionException {
+        LOGGER.info("分支【{}】锁查询成功", resourceId.replace(resourceIdPre, ""));
         return true;
     }
 
@@ -167,6 +174,7 @@ public abstract class AbstractCore implements Core {
                                             BranchSession branchSession) throws IOException, TimeoutException {
         BranchCommitResponse response = (BranchCommitResponse) remotingServer.sendSyncRequest(
                 branchSession.getResourceId(), branchSession.getClientId(), request);
+        LOGGER.info("向分支【{}】发送【提交】消息成功", branchSession.getResourceId().replace(resourceIdPre, ""));
         return response.getBranchStatus();
     }
 
@@ -191,6 +199,7 @@ public abstract class AbstractCore implements Core {
                                               BranchSession branchSession) throws IOException, TimeoutException {
         BranchRollbackResponse response = (BranchRollbackResponse) remotingServer.sendSyncRequest(
                 branchSession.getResourceId(), branchSession.getClientId(), request);
+        LOGGER.info("向分支【{}】发送【回滚】消息成功", branchSession.getResourceId().replace(resourceIdPre, ""));
         return response.getBranchStatus();
     }
 

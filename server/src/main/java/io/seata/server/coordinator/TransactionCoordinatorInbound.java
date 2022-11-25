@@ -21,6 +21,8 @@ import io.seata.core.model.TransactionManager;
 /**
  * receive inbound request from RM or TM.
  *
+ * RM or TM 向 TC 发送消息
+ *
  * @author zhangchenghui.dev@gmail.com
  * @since 1.1.0
  */
