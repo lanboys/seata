@@ -73,6 +73,7 @@ public class MySQLUndoLogManager extends AbstractUndoLogManager {
     @Override
     protected void insertUndoLogWithNormal(String xid, long branchId, String rollbackCtx,
                                            byte[] undoLogContent, Connection conn) throws SQLException {
+        // 插入重做日志到本地数据库 undo_log 表
         insertUndoLog(xid, branchId, rollbackCtx, undoLogContent, State.Normal, conn);
     }
 

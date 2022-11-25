@@ -93,7 +93,7 @@ public abstract class AbstractRMHandler extends AbstractExceptionHandler
         String resourceId = request.getResourceId();
         String applicationData = request.getApplicationData();
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Branch committing: " + xid + " " + branchId + " " + resourceId + " " + applicationData);
+            LOGGER.info("分支提交 Branch committing: " + xid + " " + branchId + " " + resourceId + " " + applicationData);
         }
         BranchStatus status = getResourceManager().branchCommit(request.getBranchType(), xid, branchId, resourceId,
             applicationData);

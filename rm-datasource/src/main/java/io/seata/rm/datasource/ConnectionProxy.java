@@ -213,15 +213,19 @@ public class ConnectionProxy extends AbstractConnectionProxy {
 
     private void processGlobalTransactionCommit() throws SQLException {
         try {
+            // 本地事务提交前，分支注册
             register();
         } catch (TransactionException e) {
             recognizeLockKeyConflictException(e, context.buildLockKeys());
         }
         try {
+            // 插入重做日志到本地数据库 undo_log 表
             UndoLogManagerFactory.getUndoLogManager(this.getDbType()).flushUndoLogs(this);
+            // 本地事务提交
             targetConnection.commit();
         } catch (Throwable ex) {
             LOGGER.error("process connectionProxy commit error: {}", ex.getMessage(), ex);
+            // 向服务端报告本地事务状态异常
             report(false);
             throw new SQLException(ex);
         }
@@ -244,6 +248,7 @@ public class ConnectionProxy extends AbstractConnectionProxy {
     public void rollback() throws SQLException {
         targetConnection.rollback();
         if (context.inGlobalTransaction() && context.isBranchRegistered()) {
+            // 分支注册了才需要向 tc 报告
             report(false);
         }
         context.reset();
@@ -285,6 +290,7 @@ public class ConnectionProxy extends AbstractConnectionProxy {
             .getInstance().getBoolean(ConfigurationKeys.CLIENT_LOCK_RETRY_POLICY_BRANCH_ROLLBACK_ON_CONFLICT, DEFAULT_CLIENT_LOCK_RETRY_POLICY_BRANCH_ROLLBACK_ON_CONFLICT);
 
         public <T> T execute(Callable<T> callable) throws Exception {
+            // 全局锁冲突的时候 直接回滚，不重试
             if (LOCK_RETRY_POLICY_BRANCH_ROLLBACK_ON_CONFLICT) {
                 return callable.call();
             } else {
@@ -299,6 +305,7 @@ public class ConnectionProxy extends AbstractConnectionProxy {
                     return callable.call();
                 } catch (LockConflictException lockConflict) {
                     onException(lockConflict);
+                    // 全局锁冲突进行重试
                     lockRetryController.sleep(lockConflict);
                 } catch (Exception e) {
                     onException(e);

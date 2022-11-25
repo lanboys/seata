@@ -256,15 +256,19 @@ public final class RmNettyRemotingClient extends AbstractNettyRemotingClient {
 
     private void registerProcessor() {
         // 1.registry rm client handle branch commit processor
+        // 处理 tc 发送过来的 分支提交 消息
         RmBranchCommitProcessor rmBranchCommitProcessor = new RmBranchCommitProcessor(getTransactionMessageHandler(), this);
         super.registerProcessor(MessageType.TYPE_BRANCH_COMMIT, rmBranchCommitProcessor, messageExecutor);
         // 2.registry rm client handle branch commit processor
+        // 处理 tc 发送过来的 分支回滚 消息
         RmBranchRollbackProcessor rmBranchRollbackProcessor = new RmBranchRollbackProcessor(getTransactionMessageHandler(), this);
         super.registerProcessor(MessageType.TYPE_BRANCH_ROLLBACK, rmBranchRollbackProcessor, messageExecutor);
         // 3.registry rm handler undo log processor
+        // 处理 tc 发送过来的 移除UndoLog 消息
         RmUndoLogProcessor rmUndoLogProcessor = new RmUndoLogProcessor(getTransactionMessageHandler());
         super.registerProcessor(MessageType.TYPE_RM_DELETE_UNDOLOG, rmUndoLogProcessor, messageExecutor);
         // 4.registry TC response processor
+        // 主动发送消息给 tc 后，处理 tc 的回复
         ClientOnResponseProcessor onResponseProcessor =
             new ClientOnResponseProcessor(mergeMsgMap, super.getFutures(), getTransactionMessageHandler());
         super.registerProcessor(MessageType.TYPE_SEATA_MERGE_RESULT, onResponseProcessor, null);

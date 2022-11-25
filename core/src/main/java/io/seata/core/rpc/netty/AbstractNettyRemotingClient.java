@@ -75,8 +75,10 @@ public abstract class AbstractNettyRemotingClient extends AbstractNettyRemoting 
 
     private static final int MAX_MERGE_SEND_THREAD = 1;
     private static final long KEEP_ALIVE_TIME = Integer.MAX_VALUE;
-    private static final long SCHEDULE_DELAY_MILLS = 60 * 1000L;
-    private static final long SCHEDULE_INTERVAL_MILLS = 10 * 1000L;
+    // 默认 60s
+    private static final long SCHEDULE_DELAY_MILLS = 6 * 1000L;
+    // 默认 10s
+    private static final long SCHEDULE_INTERVAL_MILLS = 120 * 1000L;
     private static final String MERGE_THREAD_PREFIX = "rpcMergeMessageSend";
     protected final Object mergeLock = new Object();
 
@@ -103,6 +105,7 @@ public abstract class AbstractNettyRemotingClient extends AbstractNettyRemoting 
         timerExecutor.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
+                // 定时检查与seata服务端的连接，如果连接断开，就重新连接
                 clientChannelManager.reconnect(getTransactionServiceGroup());
             }
         }, SCHEDULE_DELAY_MILLS, SCHEDULE_INTERVAL_MILLS, TimeUnit.MILLISECONDS);
@@ -162,6 +165,7 @@ public abstract class AbstractNettyRemotingClient extends AbstractNettyRemoting 
             }
 
             try {
+                // 等待 tc 响应
                 return messageFuture.get(timeoutMillis, TimeUnit.MILLISECONDS);
             } catch (Exception exx) {
                 LOGGER.error("wait response error:{},ip:{},request:{}",

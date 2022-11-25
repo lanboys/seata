@@ -53,7 +53,7 @@ public class RmBranchRollbackProcessor implements RemotingProcessor {
         String remoteAddress = NetUtil.toStringAddress(ctx.channel().remoteAddress());
         Object msg = rpcMessage.getBody();
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("rm handle branch rollback process:" + msg);
+            LOGGER.info("收到分支回滚消息 rm handle branch rollback process:" + msg);
         }
         handleBranchRollback(rpcMessage, remoteAddress, (BranchRollbackRequest) msg);
     }
@@ -62,7 +62,7 @@ public class RmBranchRollbackProcessor implements RemotingProcessor {
         BranchRollbackResponse resultMessage;
         resultMessage = (BranchRollbackResponse) handler.onRequest(branchRollbackRequest, null);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("branch rollback result:" + resultMessage);
+            LOGGER.debug("分支回滚结果 branch rollback result:" + resultMessage);
         }
         try {
             this.remotingClient.sendAsyncResponse(serverAddress, request, resultMessage);

@@ -101,6 +101,7 @@ public class ClientOnResponseProcessor implements RemotingProcessor {
                         LOGGER.info("msg: {} is not found in futures.", msgId);
                     }
                 } else {
+                    // rm/tm 发消息给 tc 后，会等待 tc 的响应，请求 - 响应 模式
                     future.setResultMessage(results.getMsgs()[i]);
                 }
             }
