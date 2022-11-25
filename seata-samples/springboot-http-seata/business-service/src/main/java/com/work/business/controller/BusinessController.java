@@ -23,34 +23,64 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 @RestController
-@RequestMapping("business")
+@RequestMapping("/business")
 public class BusinessController {
 
   @Resource
   private BusinessService businessService;
 
   @RequestMapping("/placeOrder/commit")
-  public Boolean placeOrderCommit() {
-    businessService.placeOrder("1", "product-1", 1);
-    return true;
+  public String placeOrderCommit() {
+    try {
+      businessService.placeOrder("1", "product", 1, false, false, false);
+      return "ok";
+    } catch (Exception e) {
+      e.printStackTrace();
+      return e.getLocalizedMessage();
+    }
   }
 
   @RequestMapping("/placeOrder/commitOtherGlobalTx")
-  public Boolean placeOrderCommitOtherGlobalTx() {
-    businessService.placeOrderOtherGlobalTx("1", "product-1", 1);
-    return true;
+  public String placeOrderCommitOtherGlobalTx() {
+    try {
+      businessService.placeOrderOtherGlobalTx("1", "product", 1, false, false);
+      return "ok";
+    } catch (Exception e) {
+      e.printStackTrace();
+      return e.getLocalizedMessage();
+    }
   }
 
-  @RequestMapping("/placeOrder/rollback")
-  public Boolean placeOrderRollback() {
-    // product-2 扣库存时模拟了一个业务异常,
-    businessService.placeOrder("1", "product-2", 1);
-    return true;
+  @RequestMapping("/placeOrder/rollback/stock")
+  public String placeOrderRollbackStock() {
+    try {
+      businessService.placeOrder("1", "product", 1, true, false, false);
+      return "ok";
+    } catch (Exception e) {
+      e.printStackTrace();
+      return e.getLocalizedMessage();
+    }
   }
 
-  @RequestMapping("/placeOrder")
-  public Boolean placeOrder(String userId, String commodityCode, Integer count) {
-    businessService.placeOrder("1", "product-1", 1);
-    return true;
+  @RequestMapping("/placeOrder/rollback/order")
+  public String placeOrderRollbackOrder() {
+    try {
+      businessService.placeOrder("1", "product", 1, false, true, false);
+      return "ok";
+    } catch (Exception e) {
+      e.printStackTrace();
+      return e.getLocalizedMessage();
+    }
+  }
+
+  @RequestMapping("/placeOrder/rollback/business")
+  public String placeOrderRollbackBusiness() {
+    try {
+      businessService.placeOrder("1", "product", 1, false, false, true);
+      return "ok";
+    } catch (Exception e) {
+      e.printStackTrace();
+      return e.getLocalizedMessage();
+    }
   }
 }

@@ -23,13 +23,14 @@ public class HttpUtil {
 
   private static final String StockBaseUrl = "http://localhost:9092";
 
-  public static void stockDeduct(String commodityCode, Integer count) {
+  public static String stockDeduct(String commodityCode, Integer count, boolean throwStockEx) {
     try {
       String stockDeduct = StockBaseUrl + "/stock/deduct";
 
       FormBody.Builder builder = new FormBody.Builder();
       builder.add("commodityCode", commodityCode);
       builder.add("count", count + "");
+      builder.add("throwStockEx", throwStockEx + "");
       FormBody requestBody = builder.build();
 
       // 创建请求
@@ -41,15 +42,18 @@ public class HttpUtil {
 
       Call call = okHttpClient.newCall(request);
       okhttp3.Response response = call.execute();
-      if (response.isSuccessful()) {
-        if (response.body() != null) {
-          System.out.println(response.body().string());
-          return;
-        }
+      if (response.isSuccessful() && response.body() != null) {
+        String string = response.body().string();
+        response.close();
+        return string;
       }
-      System.out.println(response);
+
+      System.out.println("http请求结果：" + response);
+      response.close();
+      throw new RuntimeException("http请求结果异常");
     } catch (IOException e) {
       e.printStackTrace();
+      throw new RuntimeException(e.getLocalizedMessage());
     }
   }
 

@@ -41,25 +41,15 @@ public class OrderController {
   /**
    * 下单：插入订单表、扣减库存，模拟回滚
    */
-  @RequestMapping("/placeOrder/commit")
-  public Boolean placeOrderCommit() {
-    orderService.placeOrder("1", "product-1", 1);
-    return true;
-  }
-
-  /**
-   * 下单：插入订单表、扣减库存，模拟回滚
-   */
-  @RequestMapping("/placeOrder/rollback")
-  public Boolean placeOrderRollback() {
-    // product-2 扣库存时模拟了一个业务异常,
-    orderService.placeOrder("1", "product-2", 1);
-    return true;
-  }
-
   @RequestMapping("/placeOrder")
-  public Boolean placeOrder(String userId, String commodityCode, Integer count) {
-    orderService.placeOrder("1", "product-1", 1);
-    return true;
+  public String placeOrder(String userId, String commodityCode, Integer count,
+      boolean throwStockEx, boolean throwOrderEx) {
+    try {
+      orderService.placeOrder(userId, commodityCode, count, throwStockEx, throwOrderEx);
+      return "ok";
+    } catch (Exception e) {
+      e.printStackTrace();
+      return e.getLocalizedMessage();
+    }
   }
 }

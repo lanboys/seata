@@ -49,12 +49,21 @@ public class OrderService {
    */
   //@GlobalTransactional 放到business
   @Transactional(rollbackFor = Exception.class)
-  public void placeOrder(String userId, String commodityCode, Integer count) {
+  public void placeOrder(String userId, String commodityCode, Integer count, boolean throwStockEx, boolean throwOrderEx) {
     BigDecimal orderMoney = new BigDecimal(count).multiply(new BigDecimal(5));
-    Order order = new Order().setUserId(userId).setCommodityCode(commodityCode).setCount(count).setMoney(
-        orderMoney);
+    Order order = new Order().setUserId(userId).setCommodityCode(commodityCode).setCount(count).setMoney(orderMoney);
+
     orderDAO.insert(order);
-    HttpUtil.stockDeduct(commodityCode, count);
+
+    String result = HttpUtil.stockDeduct(commodityCode, count, throwStockEx);
+    // 这里必须知道库存扣减是否成功，如果扣减失败就抛异常，如果扣减失败却不抛异常(可以注释掉试试)，那么最终结果数据不一致，成功下订单，库存扣减失败
+    if (!"ok".equals(result)) {
+      throw new RuntimeException(result);
+    }
+
+    if (throwOrderEx) {
+      throw new RuntimeException("订单异常");
+    }
   }
 
   private void sleep(int sec) {
@@ -67,16 +76,4 @@ public class OrderService {
       }
     }
   }
-
-  @Transactional(rollbackFor = Exception.class)
-  public void create(String userId, String commodityCode, Integer count) {
-
-    BigDecimal orderMoney = new BigDecimal(count).multiply(new BigDecimal(5));
-
-    Order order = new Order().setUserId(userId).setCommodityCode(commodityCode).setCount(count).setMoney(
-        orderMoney);
-    orderDAO.insert(order);
-
-  }
-
 }

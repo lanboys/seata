@@ -49,5 +49,6 @@ CREATE TABLE `undo_log`  (
 
 SET FOREIGN_KEY_CHECKS = 1;
 
-INSERT INTO `seata_stock`.`stock_tbl` (`id`, `commodity_code`, `count`) VALUES (1, 'product-1', 1000);
-INSERT INTO `seata_stock`.`stock_tbl` (`id`, `commodity_code`, `count`) VALUES (2, 'product-2', 1000);
+INSERT INTO `seata_stock`.`stock_tbl` (`id`, `commodity_code`, `count`) VALUES (1, 'product', 1000);
+INSERT INTO `seata_stock`.`stock_tbl` (`id`, `commodity_code`, `count`) VALUES (2, 'product-1', 1000);
+INSERT INTO `seata_stock`.`stock_tbl` (`id`, `commodity_code`, `count`) VALUES (3, 'product-2', 1000);

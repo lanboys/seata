@@ -43,18 +43,18 @@ public class StockService {
    * 减库存
    */
   @Transactional(rollbackFor = Exception.class)
-  public void deduct(String commodityCode, int count) {
-    // if (commodityCode.equals("product-2")) {
-    //    sleep(2);
-    //    throw new RuntimeException("异常:模拟业务异常:stock branch exception");
-    //}
-
+  public void deduct(String commodityCode, int count, boolean throwStockEx) {
     QueryWrapper<Stock> wrapper = new QueryWrapper<>();
     wrapper.setEntity(new Stock().setCommodityCode(commodityCode));
     Stock stock = stockDAO.selectOne(wrapper);
     stock.setCount(stock.getCount() - count);
 
     stockDAO.updateById(stock);
+    sleep(2);
+
+    if (throwStockEx) {
+      throw new RuntimeException("扣减库存异常");
+    }
   }
 
   private void sleep(int sec) {

@@ -28,11 +28,18 @@ import org.springframework.stereotype.Service;
 public class BusinessService {
 
   @GlobalTransactional
-  public void placeOrder(String userId, String commodityCode, Integer count) {
-    HttpUtil.placeOrder(userId, commodityCode, count);
-    if (commodityCode.equals("product-1")) {
+  public void placeOrder(String userId, String commodityCode, Integer count,
+      boolean throwStockEx, boolean throwOrderEx, boolean throwBusinessEx) {
+
+    String result = HttpUtil.placeOrder(userId, commodityCode, count, throwStockEx, throwOrderEx);
+    if (!"ok".equals(result)) {
+      throw new RuntimeException(result);
+    }
+    sleep(1);
+
+    if (throwBusinessEx) {
       sleep(5);// 增大时间查看undo_log
-      throw new RuntimeException("异常:模拟业务异常:stock branch exception");
+      throw new RuntimeException("业务异常");
     }
   }
 
@@ -40,8 +47,13 @@ public class BusinessService {
    * 跟上面的方法同时调用，虽然可以开启一个新的全局事务，但是仍然无法提交，因为有全局锁，具体怎么实现，以后再看
    */
   @GlobalTransactional
-  public void placeOrderOtherGlobalTx(String userId, String commodityCode, Integer count) {
-    HttpUtil.placeOrder(userId, commodityCode, count);
+  public void placeOrderOtherGlobalTx(String userId, String commodityCode, Integer count,
+      boolean throwStockEx, boolean throwOrderEx) {
+
+    String result = HttpUtil.placeOrder(userId, commodityCode, count, throwStockEx, throwOrderEx);
+    if (!"ok".equals(result)) {
+      throw new RuntimeException(result);
+    }
   }
 
   private void sleep(int sec) {
