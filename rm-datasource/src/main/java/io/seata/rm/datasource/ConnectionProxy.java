@@ -197,13 +197,16 @@ public class ConnectionProxy extends AbstractConnectionProxy {
         } else if (context.isGlobalLockRequire()) {
             processLocalCommitWithGlobalLocks();
         } else {
+            LOGGER.info("本地事务无需注册分支，直接提交");
             targetConnection.commit();
         }
     }
 
     private void processLocalCommitWithGlobalLocks() throws SQLException {
+        LOGGER.info("本地事务提交前，即将检查全局锁");
         checkLock(context.buildLockKeys());
         try {
+            LOGGER.info("本地事务正式提交");
             targetConnection.commit();
         } catch (Throwable ex) {
             throw new SQLException(ex);
@@ -213,7 +216,7 @@ public class ConnectionProxy extends AbstractConnectionProxy {
 
     private void processGlobalTransactionCommit() throws SQLException {
         try {
-            // 本地事务提交前，分支注册
+            LOGGER.info("本地事务提交前，即将注册分支");
             register();
         } catch (TransactionException e) {
             recognizeLockKeyConflictException(e, context.buildLockKeys());
@@ -221,7 +224,7 @@ public class ConnectionProxy extends AbstractConnectionProxy {
         try {
             // 插入重做日志到本地数据库 undo_log 表
             UndoLogManagerFactory.getUndoLogManager(this.getDbType()).flushUndoLogs(this);
-            // 本地事务提交
+            LOGGER.info("本地事务正式提交");
             targetConnection.commit();
         } catch (Throwable ex) {
             LOGGER.error("process connectionProxy commit error: {}", ex.getMessage(), ex);
@@ -246,9 +249,11 @@ public class ConnectionProxy extends AbstractConnectionProxy {
 
     @Override
     public void rollback() throws SQLException {
+        LOGGER.info("本地事务回滚");
         targetConnection.rollback();
         if (context.inGlobalTransaction() && context.isBranchRegistered()) {
             // 分支注册了才需要向 tc 报告
+            LOGGER.info("本地事务回滚后，向 tc 报告");
             report(false);
         }
         context.reset();
@@ -258,6 +263,7 @@ public class ConnectionProxy extends AbstractConnectionProxy {
     public void setAutoCommit(boolean autoCommit) throws SQLException {
         if (autoCommit && !getAutoCommit()) {
             // change autocommit from false to true, we should commit() first according to JDBC spec.
+            LOGGER.info("自动提交设置变更 autoCommit: false -> true ");
             doCommit();
         }
         targetConnection.setAutoCommit(autoCommit);

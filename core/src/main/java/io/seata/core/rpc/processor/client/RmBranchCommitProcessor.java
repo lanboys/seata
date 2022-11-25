@@ -61,8 +61,8 @@ public class RmBranchCommitProcessor implements RemotingProcessor {
     private void handleBranchCommit(RpcMessage request, String serverAddress, BranchCommitRequest branchCommitRequest) {
         BranchCommitResponse resultMessage;
         resultMessage = (BranchCommitResponse) handler.onRequest(branchCommitRequest, null);
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("分支提交结果 branch commit result:" + resultMessage);
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("分支提交结果 branch commit result:" + resultMessage);
         }
         try {
             this.remotingClient.sendAsyncResponse(serverAddress, request, resultMessage);

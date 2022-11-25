@@ -61,8 +61,8 @@ public class RmBranchRollbackProcessor implements RemotingProcessor {
     private void handleBranchRollback(RpcMessage request, String serverAddress, BranchRollbackRequest branchRollbackRequest) {
         BranchRollbackResponse resultMessage;
         resultMessage = (BranchRollbackResponse) handler.onRequest(branchRollbackRequest, null);
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("分支回滚结果 branch rollback result:" + resultMessage);
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("分支回滚结果 branch rollback result:" + resultMessage);
         }
         try {
             this.remotingClient.sendAsyncResponse(serverAddress, request, resultMessage);

@@ -65,6 +65,7 @@ public abstract class AbstractResourceManager implements ResourceManager {
             request.setApplicationData(applicationData);
 
             BranchRegisterResponse response = (BranchRegisterResponse) RmNettyRemotingClient.getInstance().sendSyncRequest(request);
+            LOGGER.info("分支注册完成，结果：{}", response);
             if (response.getResultCode() == ResultCode.Failed) {
                 throw new RmTransactionException(response.getTransactionExceptionCode(), String.format("Response[ %s ]", response.getMsg()));
             }
@@ -96,6 +97,7 @@ public abstract class AbstractResourceManager implements ResourceManager {
             request.setApplicationData(applicationData);
 
             BranchReportResponse response = (BranchReportResponse) RmNettyRemotingClient.getInstance().sendSyncRequest(request);
+            LOGGER.info("分支报告完成，结果：{}", response);
             if (response.getResultCode() == ResultCode.Failed) {
                 throw new RmTransactionException(response.getTransactionExceptionCode(), String.format("Response[ %s ]", response.getMsg()));
             }
