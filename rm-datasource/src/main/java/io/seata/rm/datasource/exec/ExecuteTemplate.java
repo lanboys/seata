@@ -15,6 +15,10 @@
  */
 package io.seata.rm.datasource.exec;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.seata.common.loader.EnhancedServiceLoader;
 import io.seata.common.util.StringUtils;
 import io.seata.common.util.CollectionUtils;
@@ -33,6 +37,8 @@ import java.util.List;
  * @author sharajava
  */
 public class ExecuteTemplate {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExecuteTemplate.class);
 
     /**
      * Execute t.
@@ -68,8 +74,13 @@ public class ExecuteTemplate {
                                                      StatementCallback<T, S> statementCallback,
                                                      Object... args) throws SQLException {
 
-        if (!RootContext.requireGlobalLock() && !StringUtils.equals(BranchType.AT.name(), RootContext.getBranchType())) {
+        boolean requireGlobalLock = RootContext.requireGlobalLock();
+        boolean isAtBranch = StringUtils.equals(BranchType.AT.name(), RootContext.getBranchType());
+        LOGGER.info("这里需要判断是否使用原始的statement, requireGlobalLock：{}, isAtBranch：{}", requireGlobalLock, isAtBranch);
+        if (!requireGlobalLock && !isAtBranch) {
             // Just work as original statement
+            LOGGER.info("使用原始的statement");
+            // 不在全局事务中，就会走这里
             return statementCallback.execute(statementProxy.getTargetStatement(), args);
         }
 
