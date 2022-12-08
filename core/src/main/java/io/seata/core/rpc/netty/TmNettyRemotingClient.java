@@ -135,7 +135,7 @@ public final class TmNettyRemotingClient extends AbstractNettyRemotingClient {
         RegisterTMRequest registerTMRequest = (RegisterTMRequest)requestMessage;
         RegisterTMResponse registerTMResponse = (RegisterTMResponse)response;
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("register TM success. client version:{}, server version:{},channel:{}", registerTMRequest.getVersion(), registerTMResponse.getVersion(), channel);
+            LOGGER.info("客户端注册 TM 成功 register TM success. client version:{}, server version:{},channel:{}", registerTMRequest.getVersion(), registerTMResponse.getVersion(), channel);
         }
         getClientChannelManager().registerChannel(serverAddress, channel);
     }

@@ -148,7 +148,8 @@ public final class RmNettyRemotingClient extends AbstractNettyRemotingClient {
         RegisterRMRequest registerRMRequest = (RegisterRMRequest)requestMessage;
         RegisterRMResponse registerRMResponse = (RegisterRMResponse)response;
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("register RM success. client version:{}, server version:{},channel:{}", registerRMRequest.getVersion(), registerRMResponse.getVersion(), channel);
+            LOGGER.info("客户端注册 RM 成功 register RM success. client version:{}, server version:{},channel:{}",
+                registerRMRequest.getVersion(), registerRMResponse.getVersion(), channel);
         }
         getClientChannelManager().registerChannel(serverAddress, channel);
         String dbKey = getMergedResourceKeys();
