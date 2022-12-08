@@ -43,9 +43,9 @@ public class OrderController {
    */
   @RequestMapping("/placeOrder")
   public String placeOrder(String userId, String commodityCode, Integer count,
-      boolean throwStockEx, boolean throwOrderEx) {
+      boolean throwStockEx, boolean throwOrderEx, boolean inTransactional) {
     try {
-      orderService.placeOrder(userId, commodityCode, count, throwStockEx, throwOrderEx);
+      orderService.placeOrder(userId, commodityCode, count, throwStockEx, throwOrderEx, inTransactional);
       return "ok";
     } catch (Exception e) {
       e.printStackTrace();

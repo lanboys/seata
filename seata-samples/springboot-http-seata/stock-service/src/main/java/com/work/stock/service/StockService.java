@@ -24,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
+import io.seata.spring.annotation.GlobalLock;
+
 /**
  * Program Name: springcloud-nacos-seata
  * <p>
@@ -51,6 +53,32 @@ public class StockService {
 
     stockDAO.updateById(stock);
     sleep(2);
+
+    if (throwStockEx) {
+      throw new RuntimeException("扣减库存异常");
+    }
+  }
+
+  /**
+   * 测试 没事务注解还会不会注册分支事务，答案是会的，只要有提交就会进行注册，前提是是在全局事务中，也就是 有xid
+   * <p>
+   * AbstractDMLBaseExecutor类中 搜索 executeAutoCommitTrue，没有事务注解，每执行一条 DML sql，会提交一次，每提交一次就会注册一次事务分支
+   */
+  public void deductNoTransactional(String commodityCode, int count, boolean throwStockEx) {
+    QueryWrapper<Stock> wrapper = new QueryWrapper<>();
+    wrapper.setEntity(new Stock().setCommodityCode(commodityCode));
+    Stock stock = stockDAO.selectOne(wrapper);
+
+    stock.setCount(stock.getCount() - count);
+    stockDAO.updateById(stock);// 第一次提交, 注册分支 一
+
+    for (int i = 0; i < 90; i++) {
+      System.out.print(" =");
+    }
+    System.out.println();
+
+    stock.setCount(stock.getCount() - count);
+    stockDAO.updateById(stock);// 第二次提交, 注册分支 二
 
     if (throwStockEx) {
       throw new RuntimeException("扣减库存异常");
