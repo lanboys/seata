@@ -82,7 +82,7 @@ public class RegRmProcessor implements RemotingProcessor {
         }
         remotingServer.sendAsyncResponse(rpcMessage, ctx.channel(), response);
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("RM register success,message:{},channel:{},client version:{}", message, ctx.channel(),
+            LOGGER.info("RM 注册成功 RM register success,message:{},channel:{},client version:{}", message, ctx.channel(),
                 message.getVersion());
         }
     }

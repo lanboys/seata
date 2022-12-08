@@ -21,7 +21,7 @@ public class HttpUtil {
   private static final String OrderBaseUrl = "http://localhost:9091";
 
   public static String placeOrder(String userId, String commodityCode, Integer count, boolean throwStockEx,
-      boolean throwOrderEx) {
+      boolean throwOrderEx, boolean inTransactional) {
 
     try {
       String stockDeduct = OrderBaseUrl + "/order/placeOrder";
@@ -32,6 +32,7 @@ public class HttpUtil {
       builder.add("count", count + "");
       builder.add("throwStockEx", throwStockEx + "");
       builder.add("throwOrderEx", throwOrderEx + "");
+      builder.add("inTransactional", inTransactional + "");
       FormBody requestBody = builder.build();
 
       // 创建请求

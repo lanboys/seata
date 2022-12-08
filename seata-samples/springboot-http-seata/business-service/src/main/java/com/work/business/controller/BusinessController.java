@@ -1,18 +1,3 @@
-/*
- *  Copyright 1999-2021 Seata.io Group.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
 package com.work.business.controller;
 
 import com.work.business.service.BusinessService;
@@ -29,10 +14,35 @@ public class BusinessController {
   @Resource
   private BusinessService businessService;
 
+  /**
+   * 测试库存模块 不添加事务注解，代理类 StatementProxy AbstractConnectionProxy 等执行流程
+   */
+  @RequestMapping("/placeOrder/commitNoTransactional")
+  public String placeOrderCommitNoTransactional() {
+    try {
+      businessService.placeOrderNoTransactional("1", "product", 1, false, false, false);
+      return "ok";
+    } catch (Exception e) {
+      e.printStackTrace();
+      return e.getLocalizedMessage();
+    }
+  }
+
   @RequestMapping("/placeOrder/commit")
   public String placeOrderCommit() {
     try {
       businessService.placeOrder("1", "product", 1, false, false, false);
+      return "ok";
+    } catch (Exception e) {
+      e.printStackTrace();
+      return e.getLocalizedMessage();
+    }
+  }
+
+  @RequestMapping("/placeOrder/commitInBoth")
+  public String placeOrderCommitInBoth() {
+    try {
+      businessService.placeOrderInBoth("1", "product", 1, false, false, false);
       return "ok";
     } catch (Exception e) {
       e.printStackTrace();

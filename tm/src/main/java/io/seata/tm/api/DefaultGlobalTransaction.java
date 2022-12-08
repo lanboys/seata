@@ -106,7 +106,7 @@ public class DefaultGlobalTransaction implements GlobalTransaction {
         status = GlobalStatus.Begin;
         RootContext.bind(xid);
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Begin new global transaction [{}]", xid);
+            LOGGER.info("开启全局事务 Begin new global transaction [{}]", xid);
         }
 
     }
@@ -141,7 +141,7 @@ public class DefaultGlobalTransaction implements GlobalTransaction {
             }
         }
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("[{}] commit status: {}", xid, status);
+            LOGGER.info("全局事务提交 [{}] commit status: {}", xid, status);
         }
 
     }
@@ -177,7 +177,7 @@ public class DefaultGlobalTransaction implements GlobalTransaction {
             }
         }
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("[{}] rollback status: {}", xid, status);
+            LOGGER.info("全局事务回滚 [{}] rollback status: {}", xid, status);
         }
     }
 
