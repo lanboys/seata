@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import io.seata.rm.datasource.exec.ExecuteTemplate;
+import io.seata.rm.datasource.exec.StatementCallback;
 import io.seata.sqlparser.ParametersHolder;
 
 /**
@@ -52,7 +53,13 @@ public class PreparedStatementProxy extends AbstractPreparedStatementProxy
 
     @Override
     public boolean execute() throws SQLException {
-        return ExecuteTemplate.execute(this, (statement, args) -> statement.execute());
+        return ExecuteTemplate.execute(this, new StatementCallback<Boolean, PreparedStatement>() {
+            @Override
+            public Boolean execute(PreparedStatement statement, Object... args) throws SQLException {
+                return statement.execute();
+            }
+        });
+        // return ExecuteTemplate.execute(this, (statement, args) -> statement.execute());
     }
 
     @Override

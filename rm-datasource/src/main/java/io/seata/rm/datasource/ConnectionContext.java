@@ -15,6 +15,9 @@
  */
 package io.seata.rm.datasource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.seata.common.exception.ShouldNeverHappenException;
+import io.seata.core.context.RootContext;
 import io.seata.rm.datasource.undo.SQLUndoLog;
 
 /**
@@ -30,6 +34,9 @@ import io.seata.rm.datasource.undo.SQLUndoLog;
  * @author sharajava
  */
 public class ConnectionContext {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionContext.class);
+
     private String xid;
     private Long branchId;
     private boolean isGlobalLockRequire;
@@ -100,6 +107,7 @@ public class ConnectionContext {
      * @param xid the xid
      */
     void bind(String xid) {
+        LOGGER.info("ConnectionContext xid 绑定 : {}", xid);
         if (xid == null) {
             throw new IllegalArgumentException("xid should not be null");
         }

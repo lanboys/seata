@@ -366,6 +366,7 @@ public abstract class AbstractNettyRemotingClient extends AbstractNettyRemoting 
             if (!(msg instanceof RpcMessage)) {
                 return;
             }
+            // 消息入口
             processMessage(ctx, (RpcMessage) msg);
         }
 

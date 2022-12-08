@@ -73,6 +73,7 @@ public class RootContext {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("bind {}", xid);
         }
+        LOGGER.info("RootContext xid 绑定 : {}", xid);
         CONTEXT_HOLDER.put(KEY_XID, xid);
     }
 
@@ -87,6 +88,7 @@ public class RootContext {
 
         //just put something not null
         CONTEXT_HOLDER.put(KEY_GLOBAL_LOCK_FLAG, KEY_GLOBAL_LOCK_FLAG);
+        LOGGER.info("RootContext 全局锁 绑定");
     }
 
     /**
@@ -99,6 +101,7 @@ public class RootContext {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("unbind {} ", xid);
         }
+        LOGGER.info("RootContext xid 解绑 : {}", xid);
         return xid;
     }
 
@@ -107,6 +110,7 @@ public class RootContext {
         if (LOGGER.isDebugEnabled() && lockFlag != null) {
             LOGGER.debug("unbind global lock flag");
         }
+        LOGGER.info("RootContext 全局锁 解绑");
     }
 
     /**

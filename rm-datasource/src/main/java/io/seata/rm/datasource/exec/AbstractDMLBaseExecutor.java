@@ -70,9 +70,21 @@ public abstract class AbstractDMLBaseExecutor<T, S extends Statement> extends Ba
     @Override
     public T doExecute(Object... args) throws Throwable {
         AbstractConnectionProxy connectionProxy = statementProxy.getConnectionProxy();
+        // 手动开启事务，必须要手动提交事务
+        // 不手动开启事务，会自动开启事务，但是是否自动提交事务，取决于数据库的 autocommit 设置
+        // MySQL 默认开启事务自动提交模式，即除了显式的开启事务（BEGIN 或 START TRANSACTION），否则每条 SQL 语句都会被当做一个单独的事务自动执行。
+        // show variables like 'autocommit';
+
+        // 如果不加事务注解 @Transactional，那么方法就没有拦截器，不会走 AbstractPlatformTransactionManager（会修改数据库默认设置），
+        // 自动提交就是数据库默认设置，通常是 true
+        LOGGER.info("是否自动提交：{}", connectionProxy.getAutoCommit());
+
         if (connectionProxy.getAutoCommit()) {
+            // 1. 数据库设置为 true，并且没有加注解 @Transactional
             return executeAutoCommitTrue(args);
         } else {
+            // 1. 数据库设置就是 false，是否加注解走到这里都会是 false
+            // 2. 数据库设置为 true，但是加了注解 @Transactional，会临时修改为 false
             return executeAutoCommitFalse(args);
         }
     }
@@ -106,9 +118,12 @@ public abstract class AbstractDMLBaseExecutor<T, S extends Statement> extends Ba
     protected T executeAutoCommitTrue(Object[] args) throws Throwable {
         ConnectionProxy connectionProxy = statementProxy.getConnectionProxy();
         try {
+            // 能不能不修改 为 false ? 直接让数据库自动提交，我认为是可以的
+            // 1. 改 autoCommit 为 false
             connectionProxy.setAutoCommit(false);
             return new LockRetryPolicy(connectionProxy).execute(() -> {
                 T result = executeAutoCommitFalse(args);
+                // 2. 手动提交
                 connectionProxy.commit();
                 return result;
             });
@@ -121,6 +136,7 @@ public abstract class AbstractDMLBaseExecutor<T, S extends Statement> extends Ba
             throw e;
         } finally {
             connectionProxy.getContext().reset();
+            // 3. 恢复 autoCommit 为 true
             connectionProxy.setAutoCommit(true);
         }
     }

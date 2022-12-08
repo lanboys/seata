@@ -44,13 +44,11 @@ public class TransactionPropagationIntercepter extends HandlerInterceptorAdapter
             LOGGER.debug("xid in RootContext[{}] xid in HttpContext[{}]", xid, rpcXid);
         }
         if (rpcXid != null) {
-            RootContext.bind(rpcXid);
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("bind[{}] to RootContext", rpcXid);
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("http请求绑定xid到RootContext入口 bind[{}] to RootContext", rpcXid);
             }
+            RootContext.bind(rpcXid);
         }
-
-
         return true;
     }
 
