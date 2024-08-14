@@ -18,9 +18,12 @@ package io.seata.spring.annotation.datasource;
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
 
+import io.seata.rm.datasource.AbstractConnectionProxy;
 import io.seata.rm.datasource.DataSourceProxy;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.IntroductionInfo;
 import org.springframework.beans.BeanUtils;
 
@@ -28,6 +31,8 @@ import org.springframework.beans.BeanUtils;
  * @author xingfudeshi@gmail.com
  */
 public class SeataAutoDataSourceProxyAdvice implements MethodInterceptor, IntroductionInfo {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SeataAutoDataSourceProxyAdvice.class);
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -37,6 +42,7 @@ public class SeataAutoDataSourceProxyAdvice implements MethodInterceptor, Introd
         Object[] args = invocation.getArguments();
         Method m = BeanUtils.findDeclaredMethod(DataSourceProxy.class, method.getName(), method.getParameterTypes());
         if (m != null) {
+            LOGGER.info("调用DataSource代理方法");
             return m.invoke(dataSourceProxy, args);
         } else {
             return invocation.proceed();

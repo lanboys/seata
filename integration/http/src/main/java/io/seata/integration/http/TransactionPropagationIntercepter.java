@@ -45,7 +45,7 @@ public class TransactionPropagationIntercepter extends HandlerInterceptorAdapter
         }
         if (rpcXid != null) {
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("http请求绑定xid到RootContext入口 bind[{}] to RootContext", rpcXid);
+                LOGGER.info("拦截器将http请求绑定xid到RootContext中 bind[{}] to RootContext", rpcXid);
             }
             RootContext.bind(rpcXid);
         }

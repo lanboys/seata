@@ -15,9 +15,13 @@
  */
 package io.seata.rm.datasource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.seata.common.util.StringUtils;
 import io.seata.core.context.RootContext;
 import io.seata.core.model.BranchType;
+import io.seata.rm.datasource.exec.ExecuteTemplate;
 import io.seata.rm.datasource.sql.SQLVisitorFactory;
 import io.seata.rm.datasource.sql.struct.TableMeta;
 import io.seata.rm.datasource.sql.struct.TableMetaCacheFactory;
@@ -49,6 +53,8 @@ import java.util.concurrent.Executor;
  * @author sharajava
  */
 public abstract class AbstractConnectionProxy implements Connection {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractConnectionProxy.class);
 
     /**
      * The Data source proxy.
@@ -126,6 +132,7 @@ public abstract class AbstractConnectionProxy implements Connection {
             targetPreparedStatement = getTargetConnection().prepareStatement(sql);
         }
         // Statement 被代理
+        LOGGER.info("PreparedStatement 被代理");
         return new PreparedStatementProxy(this, targetPreparedStatement, sql);
     }
 

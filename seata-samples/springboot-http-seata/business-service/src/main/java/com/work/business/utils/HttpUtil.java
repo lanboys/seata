@@ -41,6 +41,7 @@ public class HttpUtil {
           .addHeader(RootContext.KEY_XID, RootContext.getXID())
           .post(requestBody)
           .build();
+      System.out.println("http请求需要把xid放到请求头中");
 
       Call call = okHttpClient.newCall(request);
       okhttp3.Response response = call.execute();

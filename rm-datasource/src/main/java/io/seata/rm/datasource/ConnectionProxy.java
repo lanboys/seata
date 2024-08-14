@@ -197,7 +197,7 @@ public class ConnectionProxy extends AbstractConnectionProxy {
         } else if (context.isGlobalLockRequire()) {
             processLocalCommitWithGlobalLocks();
         } else {
-            LOGGER.info("本地事务无需注册分支，直接提交");
+            LOGGER.debug("非全局事务无需注册分支，直接提交");
             targetConnection.commit();
         }
     }
@@ -222,13 +222,12 @@ public class ConnectionProxy extends AbstractConnectionProxy {
             recognizeLockKeyConflictException(e, context.buildLockKeys());
         }
         try {
-            // 插入重做日志到本地数据库 undo_log 表
+            LOGGER.info("插入回滚日志到本地数据库 undo_log 表");
             UndoLogManagerFactory.getUndoLogManager(this.getDbType()).flushUndoLogs(this);
             LOGGER.info("本地事务正式提交");
             targetConnection.commit();
         } catch (Throwable ex) {
-            LOGGER.error("process connectionProxy commit error: {}", ex.getMessage(), ex);
-            // 向服务端报告本地事务状态异常
+            LOGGER.error("向服务端报告本地事务状态异常 process connectionProxy commit error: {}", ex.getMessage(), ex);
             report(false);
             throw new SQLException(ex);
         }
@@ -263,9 +262,10 @@ public class ConnectionProxy extends AbstractConnectionProxy {
     public void setAutoCommit(boolean autoCommit) throws SQLException {
         if (autoCommit && !getAutoCommit()) {
             // change autocommit from false to true, we should commit() first according to JDBC spec.
-            LOGGER.info("自动提交设置变更 autoCommit: false -> true ");
+            LOGGER.info("自动提交由: false -> true 需要先提交一次，即使没执行SQL，应该是为了防止前面的SQL没提交完");
             doCommit();
         }
+        LOGGER.info("自动提交设置变更 autoCommit: {}",autoCommit);
         targetConnection.setAutoCommit(autoCommit);
     }
 

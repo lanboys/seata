@@ -89,6 +89,7 @@ public class ConnectionContext {
      * @return the boolean
      */
     public boolean inGlobalTransaction() {
+        LOGGER.info("通过判断xid是否为空来判断是否在全局事务中: {}", xid);
         return xid != null;
     }
 
