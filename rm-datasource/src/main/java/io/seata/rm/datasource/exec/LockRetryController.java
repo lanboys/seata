@@ -15,8 +15,12 @@
  */
 package io.seata.rm.datasource.exec;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.seata.config.ConfigurationFactory;
 import io.seata.core.constants.ConfigurationKeys;
+import io.seata.rm.datasource.ConnectionProxy;
 
 import static io.seata.core.constants.DefaultValues.DEFAULT_CLIENT_LOCK_RETRY_INTERVAL;
 import static io.seata.core.constants.DefaultValues.DEFAULT_CLIENT_LOCK_RETRY_TIMES;
@@ -31,6 +35,8 @@ public class LockRetryController {
         ConfigurationFactory.getInstance().getInt(ConfigurationKeys.CLIENT_LOCK_RETRY_INTERVAL, DEFAULT_CLIENT_LOCK_RETRY_INTERVAL);
     private static int LOCK_RETRY_TIMES =
         ConfigurationFactory.getInstance().getInt(ConfigurationKeys.CLIENT_LOCK_RETRY_TIMES, DEFAULT_CLIENT_LOCK_RETRY_TIMES);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LockRetryController.class);
 
     private int lockRetryInternal = LOCK_RETRY_INTERNAL;
     private int lockRetryTimes = LOCK_RETRY_TIMES;
@@ -48,6 +54,7 @@ public class LockRetryController {
      * @throws LockWaitTimeoutException the lock wait timeout exception
      */
     public void sleep(Exception e) throws LockWaitTimeoutException {
+        LOGGER.info("全局锁冲突进行重试，剩余重试次数：{}, 重试间隔时间：{}ms", lockRetryTimes, lockRetryInternal);
         if (--lockRetryTimes < 0) {
             throw new LockWaitTimeoutException("Global lock wait timeout", e);
         }
