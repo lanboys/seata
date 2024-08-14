@@ -49,7 +49,7 @@ public class OrderService {
    */
   //@GlobalTransactional 放到business
   @Transactional(rollbackFor = Exception.class)
-  public void placeOrder(String userId, String commodityCode, Integer count,
+  public void placeOrder(String userId, String commodityCode, Integer count,Integer sleepSec,
       boolean throwStockEx, boolean throwOrderEx, boolean inTransactional) {
 
     BigDecimal orderMoney = new BigDecimal(count).multiply(new BigDecimal(5));
@@ -57,7 +57,7 @@ public class OrderService {
 
     orderDAO.insert(order);
 
-    String result = HttpUtil.stockDeduct(commodityCode, count, throwStockEx, inTransactional);
+    String result = HttpUtil.stockDeduct(commodityCode, count, sleepSec, throwStockEx, inTransactional);
     // 这里必须知道库存扣减是否成功，如果扣减失败就抛异常，如果扣减失败却不抛异常(可以注释掉试试)，那么最终结果数据不一致，成功下订单，库存扣减失败
     if (!"ok".equals(result)) {
       throw new RuntimeException(result);

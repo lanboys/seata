@@ -45,14 +45,14 @@ public class StockService {
    * 减库存
    */
   @Transactional(rollbackFor = Exception.class)
-  public void deduct(String commodityCode, int count, boolean throwStockEx) {
+  public void deduct(String commodityCode, int count, int sleepSec, boolean throwStockEx) {
     QueryWrapper<Stock> wrapper = new QueryWrapper<>();
     wrapper.setEntity(new Stock().setCommodityCode(commodityCode));
     Stock stock = stockDAO.selectOne(wrapper);
     stock.setCount(stock.getCount() - count);
 
     stockDAO.updateById(stock);
-    sleep(2);
+    sleep(sleepSec);
 
     if (throwStockEx) {
       throw new RuntimeException("扣减库存异常");

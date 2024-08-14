@@ -21,10 +21,10 @@ public class StockController {
    * @param count         数量
    */
   @RequestMapping(path = "/deduct")
-  public String deduct(String commodityCode, Integer count, boolean throwStockEx, boolean inTransactional) {
+  public String deduct(String commodityCode, Integer count, int sleepSec, boolean throwStockEx, boolean inTransactional) {
     try {
       if (inTransactional) {
-        stockService.deduct(commodityCode, count, throwStockEx);
+        stockService.deduct(commodityCode, count, sleepSec, throwStockEx);
       } else {
         stockService.deductNoTransactional(commodityCode, count, throwStockEx);
       }

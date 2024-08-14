@@ -16,6 +16,8 @@ public class BusinessController {
 
   /**
    * 测试库存模块 不添加事务注解，代理类 StatementProxy AbstractConnectionProxy 等执行流程
+   * <p>
+   * 搜索 executeAutoCommitTrue
    */
   @RequestMapping("/placeOrder/commitNoTransactional")
   public String placeOrderCommitNoTransactional() {
@@ -39,6 +41,9 @@ public class BusinessController {
     }
   }
 
+  /**
+   * 两个注解同时使用
+   */
   @RequestMapping("/placeOrder/commitInBoth")
   public String placeOrderCommitInBoth() {
     try {

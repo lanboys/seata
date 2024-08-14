@@ -42,10 +42,10 @@ public class OrderController {
    * 下单：插入订单表、扣减库存，模拟回滚
    */
   @RequestMapping("/placeOrder")
-  public String placeOrder(String userId, String commodityCode, Integer count,
+  public String placeOrder(String userId, String commodityCode, Integer count, Integer sleepSec,
       boolean throwStockEx, boolean throwOrderEx, boolean inTransactional) {
     try {
-      orderService.placeOrder(userId, commodityCode, count, throwStockEx, throwOrderEx, inTransactional);
+      orderService.placeOrder(userId, commodityCode, count, sleepSec, throwStockEx, throwOrderEx, inTransactional);
       return "ok";
     } catch (Exception e) {
       e.printStackTrace();

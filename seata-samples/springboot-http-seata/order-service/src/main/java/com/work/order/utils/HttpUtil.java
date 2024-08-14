@@ -23,13 +23,14 @@ public class HttpUtil {
 
   private static final String StockBaseUrl = "http://localhost:9092";
 
-  public static String stockDeduct(String commodityCode, Integer count, boolean throwStockEx, boolean inTransactional) {
+  public static String stockDeduct(String commodityCode, Integer count, int sleepSec, boolean throwStockEx, boolean inTransactional) {
     try {
       String stockDeduct = StockBaseUrl + "/stock/deduct";
 
       FormBody.Builder builder = new FormBody.Builder();
       builder.add("commodityCode", commodityCode);
       builder.add("count", count + "");
+      builder.add("sleepSec", sleepSec + "");
       builder.add("throwStockEx", throwStockEx + "");
       builder.add("inTransactional", inTransactional + "");
       FormBody requestBody = builder.build();

@@ -3,6 +3,7 @@ package com.work.business.service;
 import com.work.business.utils.HttpUtil;
 
 import io.seata.core.context.RootContext;
+import io.seata.spring.annotation.GlobalLock;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,7 +42,7 @@ public class BusinessService {
   private void doPlaceOrder(String userId, String commodityCode, Integer count,
       boolean throwStockEx, boolean throwOrderEx, boolean throwBusinessEx, boolean inTransactional) {
 
-    String result = HttpUtil.placeOrder(userId, commodityCode, count, throwStockEx, throwOrderEx, inTransactional);
+    String result = HttpUtil.placeOrder(userId, commodityCode, count, 3, throwStockEx, throwOrderEx, inTransactional);
     if (!"ok".equals(result)) {
       throw new RuntimeException(result);
     }
@@ -54,13 +55,17 @@ public class BusinessService {
   }
 
   /**
-   * 跟上面的方法同时调用，虽然可以开启一个新的全局事务，但是仍然无法提交，因为有全局锁，具体怎么实现，以后再看
+   * 跟上面的方法同时调用，虽然可以开启一个新的全局事务，但是第一个本地事务仍然无法提交，因为有全局锁，具体怎么实现，以后再看
+   * <p>
+   * 注意： 前面的事务要慢一点提交，才能模拟出并发情况
+   *
+   * LockConflictException: get global lock fail, xid:192.168.56.1:8091:567069002405253120, lockKeys:stock_tbl:3
    */
   @GlobalTransactional
   public void placeOrderOtherGlobalTx(String userId, String commodityCode, Integer count,
       boolean throwStockEx, boolean throwOrderEx) {
 
-    String result = HttpUtil.placeOrder(userId, commodityCode, count, throwStockEx, throwOrderEx, true);
+    String result = HttpUtil.placeOrder(userId, commodityCode, count, 1, throwStockEx, throwOrderEx, true);
     if (!"ok".equals(result)) {
       throw new RuntimeException(result);
     }

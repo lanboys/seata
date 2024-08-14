@@ -20,7 +20,7 @@ public class HttpUtil {
 
   private static final String OrderBaseUrl = "http://localhost:9091";
 
-  public static String placeOrder(String userId, String commodityCode, Integer count, boolean throwStockEx,
+  public static String placeOrder(String userId, String commodityCode, Integer count, Integer sleepSec, boolean throwStockEx,
       boolean throwOrderEx, boolean inTransactional) {
 
     try {
@@ -30,6 +30,7 @@ public class HttpUtil {
       builder.add("userId", userId);
       builder.add("commodityCode", commodityCode);
       builder.add("count", count + "");
+      builder.add("sleepSec", sleepSec + "");
       builder.add("throwStockEx", throwStockEx + "");
       builder.add("throwOrderEx", throwOrderEx + "");
       builder.add("inTransactional", inTransactional + "");
