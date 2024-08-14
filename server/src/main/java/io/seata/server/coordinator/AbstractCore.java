@@ -77,7 +77,7 @@ public abstract class AbstractCore implements Core {
             globalSession.addSessionLifecycleListener(SessionHolder.getRootSessionManager());
             BranchSession branchSession = SessionHelper.newBranchByGlobal(globalSession, branchType, resourceId,
                     applicationData, lockKeys, clientId);
-            branchSessionLock(globalSession, branchSession);
+            branchSessionLock(globalSession, branchSession);//加全局锁
             try {
                 globalSession.addBranch(branchSession);
             } catch (RuntimeException ex) {

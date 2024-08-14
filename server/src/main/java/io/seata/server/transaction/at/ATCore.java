@@ -58,6 +58,7 @@ public class ATCore extends AbstractCore {
     @Override
     public boolean lockQuery(BranchType branchType, String resourceId, String xid, String lockKeys)
             throws TransactionException {
+        LOGGER.info("全局锁查询，xid:{}, resourceId:{}, lockKeys:{}",xid, resourceId, lockKeys);
         return lockManager.isLockable(xid, resourceId, lockKeys);
     }
 }

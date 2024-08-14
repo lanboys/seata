@@ -119,6 +119,7 @@ public class LockStoreDataBaseDAO implements LockStore {
             boolean canLock = true;
             //query
             String checkLockSQL = LockStoreSqlFactory.getLogStoreSql(dbType).getCheckLockableSql(lockTable, sj.toString());
+            LOGGER.info("checkLockSQL：{}", checkLockSQL);
             ps = conn.prepareStatement(checkLockSQL);
             for (int i = 0; i < lockDOs.size(); i++) {
                 ps.setString(i + 1, lockDOs.get(i).getRowKey());
@@ -132,8 +133,8 @@ public class LockStoreDataBaseDAO implements LockStore {
                         String dbPk = rs.getString(ServerTableColumnsName.LOCK_TABLE_PK);
                         String dbTableName = rs.getString(ServerTableColumnsName.LOCK_TABLE_TABLE_NAME);
                         Long dbBranchId = rs.getLong(ServerTableColumnsName.LOCK_TABLE_BRANCH_ID);
-                        LOGGER.info("Global lock on [{}:{}] is holding by xid {} branchId {}", dbTableName, dbPk, dbXID,
-                            dbBranchId);
+                        LOGGER.info("锁被别的事务占用 Global lock on [{}:{}] is holding by xid {} branchId {}",
+                            dbTableName, dbPk, dbXID, dbBranchId);
                     }
                     canLock &= false;
                     break;

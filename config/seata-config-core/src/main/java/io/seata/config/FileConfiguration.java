@@ -107,7 +107,7 @@ public class FileConfiguration extends AbstractConfiguration {
                 Config appConfig = ConfigFactory.parseFileAnySyntax(targetFile);
                 fileConfig = ConfigFactory.load(appConfig);
                 if (LOGGER.isInfoEnabled()) {
-                    LOGGER.info("The configuration file used is {}", name);
+                    LOGGER.info("配置文件1 The configuration file used is {}", name);
                 }
             } else {
                 targetFilePath = null;
@@ -118,7 +118,7 @@ public class FileConfiguration extends AbstractConfiguration {
                 targetFilePath = resource.getPath();
                 fileConfig = ConfigFactory.load(name);
                 if (LOGGER.isInfoEnabled()) {
-                    LOGGER.info("The configuration file used is {}", name);
+                    LOGGER.info("配置文件2 The configuration file used is {}", name);
                 }
 
             } else {
