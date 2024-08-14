@@ -271,7 +271,12 @@ public class BranchSession implements Lockable, Comparable<BranchSession>, Sessi
     @Override
     public boolean lock() throws TransactionException {
         if (this.getBranchType().equals(BranchType.AT)) {
-            return LockerManagerFactory.getLockManager().acquireLock(this);
+            LOGGER.info("分支注册成功前需要加全局锁，开始加锁：{}, xid: {}", lockKey, getXid());
+            long start = System.currentTimeMillis();
+            boolean lock = LockerManagerFactory.getLockManager().acquireLock(this);
+            long cost = System.currentTimeMillis() - start;
+            LOGGER.info("分支注册成功前需要加全局锁，加锁结束：{}, xid: {}, 加锁结果：{}，耗时：{} ms", lockKey, getXid(), lock, cost);
+            return lock;
         }
         return true;
     }
@@ -279,7 +284,9 @@ public class BranchSession implements Lockable, Comparable<BranchSession>, Sessi
     @Override
     public boolean unlock() throws TransactionException {
         if (this.getBranchType() == BranchType.AT) {
-            return LockerManagerFactory.getLockManager().releaseLock(this);
+            boolean b = LockerManagerFactory.getLockManager().releaseLock(this);
+            LOGGER.info("释放全局锁成功：{}, xid: {}", lockKey, getXid());
+            return b;
         }
         return true;
     }
