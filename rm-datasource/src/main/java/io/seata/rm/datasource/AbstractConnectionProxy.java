@@ -125,6 +125,7 @@ public abstract class AbstractConnectionProxy implements Connection {
         if (targetPreparedStatement == null) {
             targetPreparedStatement = getTargetConnection().prepareStatement(sql);
         }
+        // Statement 被代理
         return new PreparedStatementProxy(this, targetPreparedStatement, sql);
     }
 

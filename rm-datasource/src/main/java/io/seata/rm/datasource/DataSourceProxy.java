@@ -129,6 +129,7 @@ public class DataSourceProxy extends AbstractDataSourceProxy implements Resource
 
     @Override
     public ConnectionProxy getConnection() throws SQLException {
+        // 连接被代理的地方
         Connection targetConnection = targetDataSource.getConnection();
         return new ConnectionProxy(this, targetConnection);
     }
