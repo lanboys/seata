@@ -81,6 +81,7 @@ public abstract class AbstractDMLBaseExecutor<T, S extends Statement> extends Ba
 
         if (connectionProxy.getAutoCommit()) {
             // 1. 数据库设置为 true，并且没有加注解 @Transactional
+            LOGGER.info("执行自动提交方法");
             return executeAutoCommitTrue(args);
         } else {
             // 1. 数据库设置就是 false，是否加注解走到这里都会是 false
@@ -118,7 +119,7 @@ public abstract class AbstractDMLBaseExecutor<T, S extends Statement> extends Ba
     protected T executeAutoCommitTrue(Object[] args) throws Throwable {
         ConnectionProxy connectionProxy = statementProxy.getConnectionProxy();
         try {
-            // 能不能不修改 为 false ? 直接让数据库自动提交，我认为是可以的
+            // 能不能不修改 为 false ? 直接让数据库自动提交，不行，这样的话 undo_log 就不再是同一个事务了
             // 1. 改 autoCommit 为 false
             connectionProxy.setAutoCommit(false);
             return new LockRetryPolicy(connectionProxy).execute(() -> {

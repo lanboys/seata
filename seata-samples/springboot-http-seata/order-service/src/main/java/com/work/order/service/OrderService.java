@@ -63,6 +63,8 @@ public class OrderService {
       throw new RuntimeException(result);
     }
 
+    sleep(3);
+
     if (throwOrderEx) {
       throw new RuntimeException("订单异常");
     }

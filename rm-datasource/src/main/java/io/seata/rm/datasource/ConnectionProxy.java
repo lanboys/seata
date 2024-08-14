@@ -115,6 +115,7 @@ public class ConnectionProxy extends AbstractConnectionProxy {
         try {
             boolean lockable = DefaultResourceManager.get().lockQuery(BranchType.AT,
                 getDataSourceProxy().getResourceId(), context.getXid(), lockKeys);
+            LOGGER.info("查询全局锁...");
             if (!lockable) {
                 throw new LockConflictException();
             }
@@ -147,7 +148,7 @@ public class ConnectionProxy extends AbstractConnectionProxy {
 
     private void recognizeLockKeyConflictException(TransactionException te, String lockKeys) throws SQLException {
         if (te.getCode() == TransactionExceptionCode.LockKeyConflict) {
-            StringBuilder reasonBuilder = new StringBuilder("get global lock fail, xid:");
+            StringBuilder reasonBuilder = new StringBuilder("加全局锁失败 get global lock fail, xid:");
             reasonBuilder.append(context.getXid());
             if (StringUtils.isNotBlank(lockKeys)) {
                 reasonBuilder.append(", lockKeys:").append(lockKeys);
@@ -216,7 +217,7 @@ public class ConnectionProxy extends AbstractConnectionProxy {
 
     private void processGlobalTransactionCommit() throws SQLException {
         try {
-            LOGGER.info("本地事务提交前，即将注册分支");
+            LOGGER.info("本地事务提交前，即将注册分支，服务端会在注册的时候加【全局锁】，如果加锁失败，会抛异常");
             register();
         } catch (TransactionException e) {
             recognizeLockKeyConflictException(e, context.buildLockKeys());
@@ -296,8 +297,9 @@ public class ConnectionProxy extends AbstractConnectionProxy {
             .getInstance().getBoolean(ConfigurationKeys.CLIENT_LOCK_RETRY_POLICY_BRANCH_ROLLBACK_ON_CONFLICT, DEFAULT_CLIENT_LOCK_RETRY_POLICY_BRANCH_ROLLBACK_ON_CONFLICT);
 
         public <T> T execute(Callable<T> callable) throws Exception {
-            // 全局锁冲突的时候 直接回滚，不重试
+
             if (LOCK_RETRY_POLICY_BRANCH_ROLLBACK_ON_CONFLICT) {
+                LOGGER.info("全局锁冲突的时候，直接回滚，不重试");
                 return callable.call();
             } else {
                 return doRetryOnLockConflict(callable);
@@ -312,6 +314,7 @@ public class ConnectionProxy extends AbstractConnectionProxy {
                 } catch (LockConflictException lockConflict) {
                     onException(lockConflict);
                     // 全局锁冲突进行重试
+                    LOGGER.info("全局锁冲突进行重试...");
                     lockRetryController.sleep(lockConflict);
                 } catch (Exception e) {
                     onException(e);
