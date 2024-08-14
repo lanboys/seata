@@ -42,15 +42,16 @@ public class SeataAutoDataSourceProxyCreator extends AbstractAutoProxyCreator {
     @Override
     protected Object[] getAdvicesAndAdvisorsForBean(Class<?> beanClass, String beanName, TargetSource customTargetSource) throws BeansException {
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Auto proxy of [{}]", beanName);
+            LOGGER.info("自动代理了系统的 DataSource Auto proxy of [{}]", beanName);
         }
         return new Object[]{advisor};
     }
 
     @Override
     protected boolean shouldSkip(Class<?> beanClass, String beanName) {
-        return SeataProxy.class.isAssignableFrom(beanClass) ||
-            !DataSource.class.isAssignableFrom(beanClass) ||
-            Arrays.asList(excludes).contains(beanClass.getName());
+        // 自动代理DataSource
+        return SeataProxy.class.isAssignableFrom(beanClass) || // SeataProxy子类应该跳过
+            !DataSource.class.isAssignableFrom(beanClass) || // 不是DataSource子类应该跳过
+            Arrays.asList(excludes).contains(beanClass.getName()); // DataSource子类，且在excludes中 应该跳过
     }
 }

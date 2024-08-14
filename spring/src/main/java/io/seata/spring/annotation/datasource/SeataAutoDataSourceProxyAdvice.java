@@ -31,6 +31,7 @@ public class SeataAutoDataSourceProxyAdvice implements MethodInterceptor, Introd
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
+        // 这里创建 DataSourceProxy
         DataSourceProxy dataSourceProxy = DataSourceProxyHolder.get().putDataSource((DataSource) invocation.getThis());
         Method method = invocation.getMethod();
         Object[] args = invocation.getArguments();
