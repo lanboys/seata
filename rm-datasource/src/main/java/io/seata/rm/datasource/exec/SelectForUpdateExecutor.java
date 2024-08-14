@@ -97,7 +97,18 @@ public class SelectForUpdateExecutor<T, S extends Statement> extends BaseTransac
                     }
 
                     if (RootContext.inGlobalTransaction()) {
+                        // https://seata.apache.org/zh-cn/docs/v1.3/dev/mode/at-mode
+
+                        // SELECT...FOR UPDATE 申请全局锁，如果别人持有全局锁，则需要等别人释放锁后才能继续，否则阻塞等待，有点类似串行化，性能有问题
+                        // 不加锁的话，属于读未提交，就是读全局未提交的意思，比如，全局事务还没提交，其中一个本地事务已经提交，
+                        // 别人一个简单的查询，就能查询到这个提交的本地事务，如果加锁了，就会阻塞等待
+
+                        // 并发 写 - 读      隔离
+                        // 并发 写 - 写      隔离
+
+                        // 例子：流程状态和发货通知单，发货通知单状态改了，流程状态还没改，别人就查询发货通知单，会发现流程状态和发货通知单状态不一致
                         //do as usual
+                        LOGGER.info("SELECT...FOR UPDATE 语句，申请全局锁，保证全局读已提交");
                         statementProxy.getConnectionProxy().checkLock(lockKeys);
                     } else if (RootContext.requireGlobalLock()) {
                         //check lock key before commit just like DML to avoid reentrant lock problem(no xid thus can
@@ -111,6 +122,8 @@ public class SelectForUpdateExecutor<T, S extends Statement> extends BaseTransac
                     if (sp != null) {
                         conn.rollback(sp);
                     } else {
+                        // 在MySQL中，当事务提交或回滚时，SELECT ... FOR UPDATE 语句所获取的锁会被释放
+                        LOGGER.info("回滚事务，SELECT...FOR UPDATE 语句所获取的锁会被释放");
                         conn.rollback();
                     }
                     lockRetryController.sleep(lce);
